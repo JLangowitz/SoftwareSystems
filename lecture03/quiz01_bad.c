@@ -5,7 +5,7 @@ License: GNU GPLv3
 
 */
 
-#include <stdio.h>;
+#include <stdio.h>
 
 // Checks whether a character is a digit.
 int is_digit(char c) {
@@ -28,9 +28,10 @@ int main()
     char string[] = "123";
     int number;
 
-    if (is_integer(string))
-	number = atoi(string);
-	printf("Your number is: %i\n", number);
+    if (is_integer(string)){
+        number = atoi(string);
+        printf("Your number is: %i\n", number);
+    }
 
     return 0;
 }
