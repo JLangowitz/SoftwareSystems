@@ -23,7 +23,6 @@ char *center(char *s, int n, char fillchar)
     int fills = n-unfilled;
     int left_chars = fills / 2;
     int i;
-    // printf("%i  %i  %i\n", left_chars, right_chars, unfilled);
     for (i = 0;i < n; ++i){
         if ((i < left_chars) || (i >= (left_chars + unfilled)))
             out_string[i] = fillchar;
