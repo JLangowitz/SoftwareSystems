@@ -44,7 +44,7 @@ void find_track_regex(char *pattern)
     regex_t regex;
     char msgbuf[100];
 
-    ret = regcomp(&regex, pattern, REG_EXTENDED || REG_NOSUB);
+    ret = regcomp(&regex, pattern, REG_EXTENDED | REG_NOSUB);
     if (ret) {
         fprintf(stderr, "Could not compile regex\n");
         exit(1);

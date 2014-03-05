@@ -47,5 +47,9 @@ int main (int argc, char *argv[])
     char *s4 = center("Exam 1", 33, '^');
     printf("%s\n", s4);
 
+    free(s);
+    free(s2);
+    free(s3);
+    free(s4);
     return 0;
 }

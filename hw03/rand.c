@@ -19,10 +19,14 @@
 
 // generate a random float using the algorithm described
 // at allendowney.com/research/rand
+
+#include <stdint.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 float my_random_float()
 {
   int x, exp, mant;
-  float f;
 
   // this union is for assembling the float.
   union {
@@ -83,13 +87,55 @@ float my_random_float2()
   mant = x >> 8;
   b.i = (exp << 23) | mant;
 
+  printf("0x%x\n", b.i);
+  printf("%g\n", b.f);
   return b.f;
 }
 
 // compute a random double using my algorithm
 double my_random_double()
 {
-  // TODO: fill this in
+  {
+  uint64_t x;
+  uint64_t mant;
+  uint64_t exp = 1022;
+  int mask = 1;
+
+  union {
+    double f;
+    uint64_t i;
+  } b;
+
+  // generate random bits until we see the first set bit
+  while (1) {
+    x = (uint64_t)random();
+    x = x << 32;
+    // printf("%i\n", sizeof(x));
+    x = x | (uint64_t)random();
+    // printf("%"PRIu64"\n", x);
+    if (x == 0) {
+      exp -= 63;
+    } else {
+      break;
+    }
+  }
+
+
+  // find the location of the first set bit and compute the exponent
+  while (x & mask) {
+    mask <<= 1;
+    exp--;
+  }
+
+  // use the remaining bit as the mantissa
+  mant = x >> 11;
+  b.i = (exp << 52) | mant;
+
+  // printf("0x%x\n", b.i);
+  // printf("%g\n", b.f);
+  return b.f;
+}
+
 }
 
 // return a constant (this is a dummy function for time trials)
