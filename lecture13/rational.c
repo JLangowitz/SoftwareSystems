@@ -13,6 +13,14 @@ typedef struct {
 // If unable to allocate, prints an error message and exits.
 Rational *make_rational(int numer, int denom) {
     Rational *rational = malloc(sizeof(rational));
+
+    // CORRECTIONS, THIS WAS NOT HERE WHEN TURNED IN
+    if (rational == NULL)
+    {
+        fprintf(stderr, "%s\n", "No free space in heap");
+    }
+    // BACK TO THINGS THAT I DID DURING THE QUIZ
+
     rational->numer = numer;
     rational->denom = denom;
     return rational;
@@ -26,6 +34,8 @@ double rational_to_double(Rational *rational) {
 
 // Multiplies two rational numbers; returns a new Rational.
 Rational *mult_rational(Rational *r1, Rational *r2) {
+    // REALLY OUGHT TO HAVE USED make_rational
+    
     Rational *product = malloc(sizeof(Rational));
     product->numer = r1->numer * r2->numer;
     product->denom = r1->denom * r2->denom;

@@ -49,15 +49,36 @@ int pop(Node **head) {
 
 // Add a new element to the beginning of the list.
 void push(Node **head, int val) {
-    // FILL THIS IN!
+    *head = make_node(val, *head);
+}
+
+void free_list(Node *head){
+    if (head == NULL){
+        return;
+    }
+    free_list(head->next);
+    free(head);
 }
 
 // Remove the first element with the given value; return the number
 // of nodes removed.
 int remove_by_value(Node **head, int val) {
-    // FILL THIS IN!
+    int n = 0;
+    Node *current = *head;
+    while (current){
+        n++;
+        if (current->val == val){
+            Node *new = current->next;
+            current->next = NULL;
+            free_list(*head);
+            *head = new;
+            return n;
+        }
+        current = current->next;
+    }
     return 0;
 }
+
 
 // Reverse the elements of the list without allocating new nodes.
 void reverse(Node **head) {
@@ -74,10 +95,11 @@ int main() {
     int retval = pop(&test_list);
     push(&test_list, retval+10);
 
-    remove_by_value(&test_list, 3);
+    remove_by_value(&test_list, 2);
     remove_by_value(&test_list, 7);
 
     reverse(&test_list);
 
     print_list(test_list);
+    return 0;
 }
