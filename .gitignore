@@ -19,5 +19,6 @@
 
 #regular files
 */*
+*/*.txt
 
 /hw02/wget-1.15
