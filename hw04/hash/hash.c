@@ -248,7 +248,7 @@ typedef struct map {
 Map *make_map(int n)
 {
     Map *map = (Map *) malloc(sizeof(Map));
-    map->lists = malloc(sizeof(Node)*n);
+    map->lists = (Node **) malloc(sizeof(Node)*n);
     map->n = n;
     int i;
     for (i = 0; i < map->n; i++){

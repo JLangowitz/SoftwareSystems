@@ -107,8 +107,28 @@ void reverse(Node **head) {
 // element between the first and second elements.
 // Returns 0 if successful, -1 if the index is out of range.
 int insert_by_index(Node **head, int val, int index) {
-    // FILL THIS IN
-    return -1;
+    // Special case the following logic doesn't handle, 
+    // so just use push
+    if(index == 0){
+        push(head, val);
+        return 0;
+    }
+
+    Node *current = *head;
+    int i;
+    // Go through until current is the element after which
+    // we want to insert, return -1 if out of bounds
+    for(i=0; i<index-1; i++){
+        if(current->next != NULL){
+            current = current->next;
+        } else {
+            return -1;
+        }
+    }
+    // Change current so that it's next points to a new node with value val,
+    // which in turn points to what current used to have at next.
+    current->next = make_node(val, current->next);
+    return 0;
 }
 
 // Makes a mysterious data structure.
@@ -138,6 +158,7 @@ int main() {
 
     // this index is out of bounds; should return -1
     int res = insert_by_index(&test_list, 9, 8);
+    printf("%i\n", res);
     assert(res == -1);
 
     printf("test_list\n");

@@ -100,7 +100,7 @@ ISR(TIMER1_COMPA_vect){//timer1 interrupt
   }
 }
 
-unsigned char reverse(unsigned char b) {
+unsigned char reverseByte(unsigned char b) {
    b = (b & B11110000) >> 4 | (b & B00001111) << 4;
    b = (b & B11001100) >> 2 | (b & B00110011) << 2;
    b = (b & B10101010) >> 1 | (b & B01010101) << 1;
