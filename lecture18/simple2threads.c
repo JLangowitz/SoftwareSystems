@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
     if (code) {
 	fprintf(stderr, "pthread_create failed with code %d\n", code);
     }
-    sleep(5);
+    sleep(3);
     printf("Parent is done sleeping 5 seconds.\n");
+    pthread_exit(NULL);
     return 0;
 }
