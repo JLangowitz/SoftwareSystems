@@ -30,7 +30,7 @@ int get_count(GHashTable *d, gpointer key){
 //         g_hash_table_insert(d, get_key(d, &key), count);
 //         key = strtok(NULL, " ");
 //     }
-// }
+// } 
 
 // void print_pair(gpointer key, gpointer val, gpointer data){
 //     printf("word:%s\tfreq:%i\n", (char *)key, *(int *)val);

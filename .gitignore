@@ -17,8 +17,12 @@
 *.out
 *.app
 
-#regular files
-*/*
+# Other things
+*.pyc
+*.gz
+*/node_modules
+
+#text files
 */*.txt
 
 /hw02/wget-1.15
