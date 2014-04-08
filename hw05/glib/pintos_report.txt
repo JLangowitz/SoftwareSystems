@@ -1,4 +1,8 @@
 Pintos - Threading
+Collaboration between:
+Madison May
+Josh Langowitz
+Thomas Nattestad
 
 In this segment of the homework, we improved upon the existing implementation of `thread_sleep` by modifying the code to block/resume the current thread instead of yielding. 
 
