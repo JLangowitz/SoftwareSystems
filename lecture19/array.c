@@ -10,7 +10,7 @@ License: Creative Commons Attribution-ShareAlike 3.0
 #include <pthread.h>
 #include "mutex.h"
 
-#define SIZE 1000
+#define SIZE 10000000
 
 typedef struct {
     int next_id;
@@ -39,8 +39,10 @@ Environment *make_environment ()
 
 int get_next_id (Environment *env)
 {
-    int id = env->next_id;
-    env->next_id++;
+    acquire(env->lock);
+        int id = env->next_id;
+        env->next_id++;
+    release(env->lock);
     return id;
 }
 
@@ -49,12 +51,12 @@ void loop_and_count (pthread_t self, Environment *env)
     int id;
     
     while (1) {
-	id = get_next_id (env);
-	
-	// printf ("%d got %d\n", self, id);
-	
-	if (id >= SIZE) return;
-	env->array[id]++;
+    	id = get_next_id (env);
+    	
+    	// printf ("%d got %d\n", self, id);
+    	
+    	if (id >= SIZE) return;
+        env->array[id]++;
     }
 }
 
@@ -65,9 +67,9 @@ void check_array (Environment *env)
     printf ("Checking...\n");
     
     for (i=0; i<SIZE; i++) {
-	if (env->array[i] != 1) {
-	    printf ("%d\t%d\n", i, env->array[i]);
-	}
+    	if (env->array[i] != 1) {
+    	    printf ("%d\t%d\n", i, env->array[i]);
+    	}
     }
 }
 

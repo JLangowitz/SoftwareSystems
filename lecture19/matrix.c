@@ -18,8 +18,16 @@ typedef struct {
 
 // Makes a new matrix and sets all elements to zero.
 Matrix *make_matrix(int rows, int cols) {
-    // Fill this in
-    return NULL;
+    Matrix *matrix = malloc(sizeof(Matrix));
+    matrix->rows = rows;
+    matrix->cols = cols;
+    matrix->data = malloc(sizeof(double *) * rows);
+    int i;
+    for (i = 0; i < rows; ++i)
+    {
+        matrix->data[i] = calloc(cols, sizeof(double));
+    }
+    return matrix;
 }
 
 // Prints the elements of a matrix.
@@ -78,17 +86,55 @@ Matrix *add_matrix_func(Matrix *A, Matrix *B) {
     return C;
 }
 
+Matrix *transpose_matrix(Matrix *A) {
+    int rows = A->cols;
+    int cols = A->rows;
+    Matrix *Res = make_matrix(rows, cols);
+    int i;
+    int j;
+    for (i = 0; i < rows; ++i)
+    {
+        for (j = 0; j < cols; ++j)
+        {
+            Res->data[i][j] = A->data[j][i];
+        }
+    }
+    return Res;
+}
+
+double dot_product(double *u, double *v, int len){
+    int ret = 0;
+    int i;
+    for (i = 0; i < len; ++i)
+    {
+        ret+= u[i]*v[i];
+    }
+}
+
 // Performs matrix multiplication and stores the result in the given
 // destination matrix (C).
 void mult_matrix(Matrix *A, Matrix *B, Matrix *C) {
     // Fill this in
     // Note that it is asking for matrix multiplication, not
     // elementwise multiplication
+    if ((A->cols != B->rows) || (A->rows != C->rows) || (B->cols != C->cols){
+        printf("%s\n", "DIM Mismatch");
+        exit(1);
+    }
+    Matrix *BT = transpose_matrix(B);
+    int i, j;
+    for (i = 0; i < A->rows; ++i)
+    {
+        for (j = 0; j < B->cols; ++j)
+        {
+            C->data[i,j] = dot_product(A->data[i], BT->data[j]);
+        }
+    }
 }
 
 // Performs matrix multiplication and returns a new matrix.
 Matrix *mult_matrix_func(Matrix *A, Matrix *B) {
-    // Fill this in
+    
     return NULL;
 }
 
@@ -97,6 +143,8 @@ int main() {
     consecutive_matrix(A);
     printf("A\n");
     print_matrix(A);
+    printf("AT\n");
+    print_matrix(transpose_matrix(A));
 
     Matrix *C = add_matrix_func(A, A);
     printf("A + A\n");
@@ -110,4 +158,6 @@ int main() {
     Matrix *D = mult_matrix_func(A, B);
     printf("D\n");
     print_matrix(D);
+
+    return 0;
 }
