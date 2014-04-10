@@ -49,6 +49,7 @@ int main(int argc, char const *argv[])
     }
     free(words);
     free(text);
+    g_io_channel_shutdown(channel, 0, NULL);
     free(channel);
     print_words(word_map);
     g_hash_table_destroy(word_map);

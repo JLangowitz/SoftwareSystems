@@ -30,6 +30,16 @@ Matrix *make_matrix(int rows, int cols) {
     return matrix;
 }
 
+void destroy_matrix(Matrix *A){
+    int i;
+    for (i = 0; i < A->rows; ++i)
+    {
+        free(A->data[i]);
+    }
+    free(A->data);
+    free(A);
+}
+
 // Prints the elements of a matrix.
 void print_matrix(Matrix *matrix) {
     int i, j;
@@ -103,12 +113,13 @@ Matrix *transpose_matrix(Matrix *A) {
 }
 
 double dot_product(double *u, double *v, int len){
-    int ret = 0;
+    double ret = 0;
     int i;
     for (i = 0; i < len; ++i)
     {
         ret+= u[i]*v[i];
     }
+    return ret;
 }
 
 // Performs matrix multiplication and stores the result in the given
@@ -117,7 +128,7 @@ void mult_matrix(Matrix *A, Matrix *B, Matrix *C) {
     // Fill this in
     // Note that it is asking for matrix multiplication, not
     // elementwise multiplication
-    if ((A->cols != B->rows) || (A->rows != C->rows) || (B->cols != C->cols){
+    if ((A->cols != B->rows) || (A->rows != C->rows) || (B->cols != C->cols)){
         printf("%s\n", "DIM Mismatch");
         exit(1);
     }
@@ -127,15 +138,17 @@ void mult_matrix(Matrix *A, Matrix *B, Matrix *C) {
     {
         for (j = 0; j < B->cols; ++j)
         {
-            C->data[i,j] = dot_product(A->data[i], BT->data[j]);
+            C->data[i][j] = dot_product(A->data[i], BT->data[j], A->cols);
         }
     }
+    destroy_matrix(BT);
 }
 
 // Performs matrix multiplication and returns a new matrix.
 Matrix *mult_matrix_func(Matrix *A, Matrix *B) {
-    
-    return NULL;
+    Matrix *Ret = make_matrix(A->rows, B->cols);
+    mult_matrix(A,B,Ret);
+    return Ret;
 }
 
 int main() {
@@ -143,8 +156,6 @@ int main() {
     consecutive_matrix(A);
     printf("A\n");
     print_matrix(A);
-    printf("AT\n");
-    print_matrix(transpose_matrix(A));
 
     Matrix *C = add_matrix_func(A, A);
     printf("A + A\n");
@@ -159,5 +170,9 @@ int main() {
     printf("D\n");
     print_matrix(D);
 
+    destroy_matrix(A);
+    destroy_matrix(B);
+    destroy_matrix(C);
+    destroy_matrix(D);
     return 0;
 }
