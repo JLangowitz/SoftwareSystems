@@ -11,6 +11,10 @@
 // error information
 extern int errno;
 
+int *num = NULL;
+int counter = 0;
+
+
 // get_seconds returns the number of seconds since the
 // beginning of the day, with microsecond precision
 double get_seconds () {
@@ -24,7 +28,11 @@ double get_seconds () {
 void child_code(int i) 
 {
   sleep (i);
+  counter += i;
+  *num += i;
   printf ("Hello from child %d.\n", i);
+  printf("Counter is %i\n", counter);
+  printf("Num is %i\n", *num);
   exit (i);
 }
 
@@ -38,6 +46,9 @@ int main (int argc, char *argv[])
   double start, stop;
   int i, num_children;
 
+
+  num = (int *) malloc(sizeof(int));
+  *num = 0;
   // the first command-line argument is the name of the executable.
   // if there is a second, it is the number of children to create.
   if (argc == 2) {
@@ -70,6 +81,8 @@ int main (int argc, char *argv[])
 
   /* parent continues */
   printf ("Hello from the parent.\n");
+  printf("Counter is %i\n", counter);
+  printf("Num is %i\n", *num);
 
   for (i=0; i<num_children; i++) {
     pid = wait (&status);
