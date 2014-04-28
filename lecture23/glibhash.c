@@ -39,6 +39,12 @@ void pair_printor (gpointer value, gpointer user_data)
     printf ("%d\t %s\n", pair->freq, pair->word);
 }
 
+// Frees a pair
+void pair_free (gpointer p){
+    Pair *pair = (Pair *) p;
+    g_free(pair->word);
+    g_free(pair);
+}
 
 /* Iterator that prints keys and values. */
 void printor (gpointer key, gpointer value, gpointer user_data)
@@ -67,11 +73,11 @@ void incr (GHashTable* hash, gchar *key)
     gint *val = (gint *) g_hash_table_lookup (hash, key);
 
     if (val == NULL) {
-	gint *val1 = g_new (gint, 1);
-	*val1 = 1;
-	g_hash_table_insert (hash, key, val1);
+    	gint *val1 = g_new (gint, 1);
+    	*val1 = 1;
+    	g_hash_table_replace (hash, g_strdup(key), val1);
     } else {
-	*val += 1;
+    	*val += 1;
     }
 }
 
@@ -81,33 +87,37 @@ int main (int argc, char** argv)
 
     // open the file
     if (argc > 1) {
-	filename = argv[1];
+    	filename = argv[1];
     } else {
-	filename = "emma.txt";
+    	filename = "emma.txt";
     }
 
     FILE *fp = g_fopen(filename, "r");
     if (fp == NULL) {
-	perror (filename);
-	exit (-10);
+    	perror (filename);
+    	exit (-10);
     }
 
     /* string array is a (two-L) NULL terminated array of pointers to
        (one-L) NUL terminated strings */
     gchar **array;
     gchar line[128];
-    GHashTable* hash = g_hash_table_new (g_str_hash, g_str_equal);
+    GHashTable* hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
     int i;
 
     // read lines from the file and build the hash table
     while (1) {
-	gchar *res = fgets (line, sizeof(line), fp);
-	if (res == NULL) break;
+    	gchar *res = fgets (line, sizeof(line), fp);
+    	if (res == NULL) break;
 
-	array = g_strsplit(line, " ", 0);
-	for (i=0; array[i] != NULL; i++) {
-	    incr(hash, array[i]);
-	}
+    	array = g_strsplit(line, " ", 0);
+    	for (i=0; array[i] != NULL; i++) {
+    	    incr(hash, array[i]);
+            // g_free(array[i]);
+    	}
+        g_strfreev(array);
+        // g_free(line);
+        // g_free(array);
     }
     fclose (fp);
 
@@ -115,7 +125,7 @@ int main (int argc, char** argv)
     // g_hash_table_foreach (hash,  (GHFunc) printor, "Word %s freq %d\n");
 
     // iterate the hash table and build the sequence
-    GSequence *seq = g_sequence_new (NULL);
+    GSequence *seq = g_sequence_new ((GDestroyNotify) g_free);
     g_hash_table_foreach (hash,  (GHFunc) accumulator, (gpointer) seq);
 
     // iterate the sequence and print the pairs
@@ -124,6 +134,9 @@ int main (int argc, char** argv)
     // try (unsuccessfully) to free everything
     g_hash_table_destroy (hash);
     g_sequence_free (seq);
+    // g_free(filename);
+    // g_free(line);
+    // g_free(array);
 
     return 0;
 }

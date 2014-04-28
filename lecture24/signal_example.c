@@ -19,6 +19,7 @@ Based on an example in Head First C.
 #include <signal.h>
 
 int score = 0;
+int done = 0;
 
 int catch_signal(int sig, void (*handler) (int)) {
     struct sigaction action;
@@ -35,8 +36,8 @@ void end_game(int sig)
 }
 
 void times_up(int sig) {
-    puts("\nTIME'S UP!");
-    raise(SIGINT);
+    puts("\nTIME'S UP, LAST QUESTION!");
+    done = 1;
 }
 
 int main(void) {
@@ -47,19 +48,27 @@ int main(void) {
     srandom((unsigned int) time(NULL));
 
     while(1) {
-	a = rand() % 11;
-	b = rand() % 11;
-	printf("\nWhat is %d times %d? ", a, b);
+        if (done)
+        {
+            raise(SIGINT);
+        }
+    	a = rand() % 11;
+    	b = rand() % 11;
+    	printf("\nWhat is %d times %d? ", a, b);
 
-	alarm(5);
-	fgets(txt, 4, stdin);
+    	alarm(5);
+    	fgets(txt, 4, stdin);
+        if (done)
+        {
+            fgets(txt, 4, stdin);
+        }
 
-	answer = atoi(txt);
-	if (answer == a * b) {
-	    score++;
-	} else {
-	    printf("\nWrong! Score: %i\n", score);
-	}
+    	answer = atoi(txt);
+    	if (answer == a * b) {
+    	    score++;
+    	} else {
+    	    printf("\nWrong! Score: %i\n", score);
+    	}
     }
     return 0;
 }
