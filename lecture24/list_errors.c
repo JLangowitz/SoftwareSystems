@@ -22,6 +22,14 @@ Node *make_node(int val, Node *next) {
     return node;
 }
 
+void destroy_list(Node *node){
+    if (node){
+        if (node->next)
+            destroy_list(node->next);
+        free(node);
+    }
+}
+
 void print_list(Node *head) {
     Node *current = head;
 
@@ -41,6 +49,7 @@ int pop(Node **head) {
 
     next_node = (*head)->next;
     retval = (*head)->val;
+    free(*head);
     *head = next_node;
 
     return retval;
@@ -63,16 +72,17 @@ int remove_by_value(Node **head, int val) {
     }
 
     if (node->val == val) {
-	pop(head);
+    	pop(head);
 	return 1;
     }
 
     for(; node->next != NULL; node = node->next) {
-	if (node->next->val == val) {
-	    victim = node->next;
-	    node->next = victim->next;
-	    return 1;
-	}
+    	if (node->next->val == val) {
+    	    victim = node->next;
+    	    node->next = victim->next;
+            free(victim);
+    	    return 1;
+    	}
     }
     return 0;
 }
@@ -161,7 +171,9 @@ int main() {
     print_list(empty);
 
     Node *something = make_something();
-    free(something);
+    destroy_list(something);
+    destroy_list(test_list);
+    destroy_list(empty);
 
     return 0;
 }

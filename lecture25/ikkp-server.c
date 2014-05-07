@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <ctype.h>
 
 int listener_d = 0;
 
@@ -115,7 +116,7 @@ int read_in(int socket, char *buf, int len)
 
 int main(int argc, char *argv[])
 {
-    int connect_d = 0, rc = 0;
+    int connect_d = 0;
     char intro_msg[] = "Internet Knock-Knock Protocol Server\nKnock, knock.\n";
     
     if (catch_signal(SIGINT, handle_shutdown) == -1)
@@ -135,29 +136,37 @@ int main(int argc, char *argv[])
     while (1) {
 	connect_d = open_client_socket();
 
-	if (say(connect_d, intro_msg) == -1) {
-	    close(connect_d);
-	    continue;
-	}
+        if (!fork())
+        {
+            close(listener_d);
+            if (say(connect_d, intro_msg) == -1) {
+                close(connect_d);
+                continue;
+            }
 
-	read_in(connect_d, buf, sizeof(buf));
-	// check to make sure they said "Who's there?"
-	
-	if (say(connect_d, "Surrealist giraffe.\n") == -1) {
-	    close(connect_d);
-	    continue;
-	}
+            read_in(connect_d, buf, sizeof(buf));
+            // check to make sure they said "Who's there?"
+            
+            if (say(connect_d, "Surrealist giraffe.\n") == -1) {
+                close(connect_d);
+                continue;
+            }
 
-	read_in(connect_d, buf, sizeof(buf));
-	// check to make sure they said "Surrealist giraffe who?"
+            read_in(connect_d, buf, sizeof(buf));
+            // check to make sure they said "Surrealist giraffe who?"
 
- 
-	if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
-	    close(connect_d);
-	    continue;
-	}
+         
+            if (say(connect_d, "Bathtub full of brightly-colored machine tools.\n") == -1) {
+                close(connect_d);
+                continue;
+            }
 
-	close(connect_d);
+            close(connect_d);
+            return 0;
+        }
+        else{
+            close(connect_d);
+        }
     }
     return 0;
 }
